@@ -1,0 +1,82 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.3'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id "org.jooq.jooq-codegen-gradle" version "3.19.11"
+}
+
+group = 'com.example.toygry'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+    implementation 'org.jooq:jooq-codegen:3.19.11'
+
+}
+
+// jooq 설정
+jooq {
+    configuration {
+        jdbc {
+            driver = 'org.postgresql.Driver'
+            url = 'jdbc:postgresql://cloud.devyoon.kr:45432/moneymoa'
+            user = 'jungry'
+            password = 'duffufK123!'
+        }
+
+        generator {
+            name = 'org.jooq.codegen.DefaultGenerator'
+
+            database {
+                name = 'org.jooq.meta.postgres.PostgresDatabase'
+                inputSchema = 'public'  // 데이터베이스의 스키마를 명시합니다.
+                includes = '.*'  // 모든 테이블을 포함합니다. 특정 테이블만 포함하려면 패턴을 수정합니다.
+                excludes = ''  // 제외할 테이블이 있으면 여기에 패턴을 입력합니다.
+                forcedTypes {
+                    forcedType {
+                        name = 'varchar'
+                        expression = '.*'  // 모든 필드를 varchar로 강제합니다.
+                        types = 'JSONB?'  // 특정 타입만 강제하려면 여기에 입력합니다.
+                    }
+                }
+            }
+            target {
+                packageName = 'com.example.toygry.moneymoa.jooq.generated'  // 생성된 코드의 패키지 이름입니다.
+                directory = 'src/main/java'  // 생성된 코드가 저장될 디렉토리입니다.
+            }
+        }
+    }
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
