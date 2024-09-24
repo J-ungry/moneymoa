@@ -1,4 +1,4 @@
-package com.example.toygry.moneymoa.entity;
+package com.example.toygry.moneymoa.Friends.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,34 +6,36 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "friends")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transactions {
+public class Friends {
 
     @Id
-    @Column(name ="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name ="user_id")
-    private String userId;
+    @Column(name = "request_uuid")
+    private UUID requestUUID;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "receiver_uuid")
+    private UUID receiverUUID;
 
-    @Column(name = "amount")
-    private BigDecimal amount;
+    @Column(name = "request_id")
+    private String requestId;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "receiver_id")
+    private String receiverID;
+
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;

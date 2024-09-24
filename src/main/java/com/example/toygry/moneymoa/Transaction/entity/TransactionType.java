@@ -1,4 +1,4 @@
-package com.example.toygry.moneymoa.entity;
+package com.example.toygry.moneymoa.Transaction.entity;
 
 public enum TransactionType {
     DEPOSIT,
