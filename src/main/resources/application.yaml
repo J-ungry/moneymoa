@@ -1,3 +1,5 @@
+server:
+  port: 48080
 spring:
   config:
     import:
@@ -5,7 +7,7 @@ spring:
       - classpath:/ignore/moneymoa-security.yaml
   application:
     name: moneymoa
-  jpa: # JPA ?? (?? JPA? ?? ???? ??)
+  jpa:
     hibernate:
       ddl-auto: update
     show-sql: true

@@ -1,6 +1,6 @@
-package com.example.toygry.moneymoa.repository;
+package com.example.toygry.moneymoa.Transaction.repository;
 
-import com.example.toygry.moneymoa.entity.Transactions;
+import com.example.toygry.moneymoa.Transaction.entity.Transactions;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

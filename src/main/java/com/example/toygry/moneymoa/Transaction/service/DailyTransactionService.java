@@ -1,12 +1,12 @@
-package com.example.toygry.moneymoa.service;
+package com.example.toygry.moneymoa.Transaction.service;
 
-import com.example.toygry.moneymoa.dto.CreateTransactionRequest;
-import com.example.toygry.moneymoa.dto.DayTransactionResponse;
-import com.example.toygry.moneymoa.dto.TransactionsResponse;
-import com.example.toygry.moneymoa.entity.TransactionType;
-import com.example.toygry.moneymoa.entity.Transactions;
-import com.example.toygry.moneymoa.mapper.TransactionsMapper;
-import com.example.toygry.moneymoa.repository.TransactionRepository;
+import com.example.toygry.moneymoa.Transaction.dto.CreateTransactionRequest;
+import com.example.toygry.moneymoa.Transaction.dto.DayTransactionResponse;
+import com.example.toygry.moneymoa.Transaction.dto.TransactionsResponse;
+import com.example.toygry.moneymoa.Transaction.entity.TransactionType;
+import com.example.toygry.moneymoa.Transaction.entity.Transactions;
+import com.example.toygry.moneymoa.Transaction.mapper.TransactionsMapper;
+import com.example.toygry.moneymoa.Transaction.repository.TransactionRepository;
 import com.example.toygry.moneymoa.utils.KeycloakToken;
 import com.example.toygry.moneymoa.utils.TokenUtils;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class DayTransactionService {
+public class DailyTransactionService {
 
     private final TokenUtils tokenUtils;
     private final TransactionRepository transactionRepository;

@@ -1,7 +1,7 @@
-package com.example.toygry.moneymoa.mapper;
+package com.example.toygry.moneymoa.Transaction.mapper;
 
-import com.example.toygry.moneymoa.dto.TransactionsResponse;
-import com.example.toygry.moneymoa.entity.Transactions;
+import com.example.toygry.moneymoa.Transaction.dto.TransactionsResponse;
+import com.example.toygry.moneymoa.Transaction.entity.Transactions;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;

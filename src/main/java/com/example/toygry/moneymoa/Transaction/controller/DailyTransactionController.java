@@ -1,9 +1,9 @@
-package com.example.toygry.moneymoa.controller;
+package com.example.toygry.moneymoa.Transaction.controller;
 
-import com.example.toygry.moneymoa.dto.CreateTransactionRequest;
-import com.example.toygry.moneymoa.dto.DayTransactionResponse;
-import com.example.toygry.moneymoa.dto.TransactionsResponse;
-import com.example.toygry.moneymoa.service.DayTransactionService;
+import com.example.toygry.moneymoa.Transaction.dto.CreateTransactionRequest;
+import com.example.toygry.moneymoa.Transaction.dto.DayTransactionResponse;
+import com.example.toygry.moneymoa.Transaction.dto.TransactionsResponse;
+import com.example.toygry.moneymoa.Transaction.service.DailyTransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/day-transaction")
 @AllArgsConstructor
-public class DayTransactionController {
+public class DailyTransactionController {
 
-    private final DayTransactionService dayTransactionService;
+    private final DailyTransactionService dayTransactionService;
 
     @GetMapping
     public ResponseEntity<List<TransactionsResponse>> getAllTransactions() {
