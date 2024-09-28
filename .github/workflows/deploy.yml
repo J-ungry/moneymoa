@@ -33,7 +33,7 @@ jobs:
 
       - name: Deploy to Synology server
         run: |
-          ssh -p ${{ secrets.SYNOLOGY_PORT }} ${{ secerets.SYNOLOGY_USER }}@${{ secrets.SYNOLOGY_DOMAIN }} "
+          ssh -p ${{ secrets.SYNOLOGY_PORT }} ${{ secrets.SYNOLOGY_USER }}@${{ secrets.SYNOLOGY_DOMAIN }} "
           if [ \$(docker ps -q --filter name=moneymoa-backend) ]; then
             docker stop moneymoa-backend && docker rm moneymoa-backend;
           fi
