@@ -28,7 +28,7 @@ jobs:
         run: docker build -t moneymoa-backend:latest .
 
       - name: Log in to Synology Docker
-        run: echo "${{ secrets.SYNOLOGY_PASSWORD }}" | docker login synology.domain.com -u "${{ secrets.SYNOLOGY_USER }}" --password-stdin
+        run: echo "${{ secrets.SYNOLOGY_PASSWORD }}" | docker login ${{ secrets.SYNOLOGY_DOMAIN }} -u "${{ secrets.SYNOLOGY_USER }}" --password-stdin
 
       - name: Push Docker image
         run: docker push ${{ secrets.SYNOLOGY_DOMAIN }}/moneymoa-backend:latest
