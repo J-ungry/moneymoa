@@ -27,11 +27,13 @@ jobs:
               git pull origin main
             fi
             
-            /usr/local/bin/docker build -t moneymoa-backend .
+            ./gradlew build
             
-            /usr/local/bin/docker stop moneymoa-backend || true
-            /usr/local/bin/docker rm moneymoa-backend || true
+            echo "duffufK123\!" | sudo /usr/local/bin/docker build -t moneymoa-backend .
             
-            /usr/local/bin/docker run -d --name moneymoa-backend -p 48000:48000 moneymoa-backend
+            sudo /usr/local/bin/docker stop moneymoa-backend || true
+            sudo /usr/local/bin/docker rm moneymoa-backend || true
+            
+            sudo /usr/local/bin/docker run -d --name moneymoa-backend -p 48000:48000 moneymoa-backend
             
             echo "Deploy Complete"
