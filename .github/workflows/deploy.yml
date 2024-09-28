@@ -27,11 +27,11 @@ jobs:
               git pull origin main
             fi
             
-            docker build -t moneymoa-backend .
+            /usr/local/bin/docker build -t moneymoa-backend .
             
-            docker stop moneymoa-backend || true
-            docker rm moneymoa-backend || true
+            /usr/local/bin/docker stop moneymoa-backend || true
+            /usr/local/bin/docker rm moneymoa-backend || true
             
-            docker run -d --name moneymoa-backend -p 48000:48000 moneymoa-backend
+            /usr/local/bin/docker run -d --name moneymoa-backend -p 48000:48000 moneymoa-backend
             
             echo "Deploy Complete"
