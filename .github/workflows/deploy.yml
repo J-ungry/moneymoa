@@ -1,0 +1,41 @@
+name: CI/CD for Synology
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Build Docker image
+        run: docker build -t moneymoa-backend:latest .
+
+      - name: Log in to Synology Docker
+        run: echo "${{ secrets.SYNOLOGY_PASSWORD }}" | docker login synology.domain.com -u "${{ secerets.SYNOLOGY_USER }}" --password-stdin
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.SYNOLOGY_DOMAIN }}/moneymoa-backend:latest
+
+      - name: Deploy to Synology server
+        run: |
+          ssh -p ${{ secrets.SYNOLOGY_PORT }} ${{ secerets.SYNOLOGY_USER }}@${{ secrets.SYNOLOGY_DOMAIN }} "
+          if [ \$(docker ps -q --filter name=moneymoa-backend) ]; then
+            docker stop moneymoa-backend && docker rm moneymoa-backend;
+          fi
+          docker pull ${{ secrets.SYNOLOGY_DOMAIN }}/moneymoa-backend:latest && docker run -d --name moneymoa-backend -p 48080:48080 ${{ secrets.SYNOLOGY_DOMAIN }}/moneymoa-backend:latest"
+
