@@ -41,8 +41,8 @@ jobs:
           username: ${{ secrets.SYNOLOGY_USER }}
           password: ${{ secrets.SYNOLOGY_PASSWORD }}
           port: ${{ secrets.SYNOLOGY_PORT }}
-        run: |
-          if [ \$(docker ps -q --filter name=moneymoa-backend) ]; then
-            docker stop moneymoa-backend && docker rm moneymoa-backend;
-          fi
-          docker pull ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest && docker run -d --name moneymoa-backend -p 48080:48080 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
+          script: |
+            if [ \$(docker ps -q --filter name=moneymoa-backend) ]; then
+              docker stop moneymoa-backend && docker rm moneymoa-backend;
+            fi
+            docker pull ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest && docker run -d --name moneymoa-backend -p 48080:48080 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
