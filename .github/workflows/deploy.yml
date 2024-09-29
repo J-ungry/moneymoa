@@ -9,31 +9,36 @@ on:
 
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy with SSH
-        uses : appleboy/ssh-action@v0.1.0
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
         with:
-          host: ${{ secrets.SYNOLOGY_DOMAIN }}
-          username: ${{ secrets.SYNOLOGY_USER }}
-          password: ${{ secrets.SYNOLOGY_PASSWORD }}
-          port: ${{ secrets.SYNOLOGY_PORT }}
-          script: |
-            if [ ! -d "moneymoa" ]; then
-              git clone ${{ secrets.CLONE_ADDR }}
-            else
-              cd moneymoa
-              git pull origin main
-            fi
-            
-            ./gradlew build
-            
-            echo "duffufK123\!" | sudo /usr/local/bin/docker build -t moneymoa-backend .
-            
-            sudo /usr/local/bin/docker stop moneymoa-backend || true
-            sudo /usr/local/bin/docker rm moneymoa-backend || true
-            
-            sudo /usr/local/bin/docker run -d --name moneymoa-backend -p 48000:48000 moneymoa-backend
-            
-            echo "Deploy Complete"
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Build Docker image
+        run: docker build -t registry.service.devyoon.kr/moneymoa-backend:latest .
+
+      - name: Login to Synology Docker
+        run: echo ${{ secrets.SYNOLOGY_PASSWORD }} | docker login ${{ secrets.DOCKER_REGISTRY }} -u "${{ secrets.SYNOLOGY_USER }}" --password-stdin
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
+
+      - name: Deploy to Synology server
+        run: |
+          ssh -i ~/.ssh/id_rsa -p 30022 ${{ secrets.SYNOLOGY_USER }}@${{ secrets.SYNOLOGY_DOMAIN }} 
+          "
+          if [ \$(docker ps -q --filter name=moneymoa-backend) ]; then
+            docker stop moneymoa-backend && docker rm moneymoa-backend;
+          fi
+          docker pull ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest && docker run -d --name moneymoa-backend -p 48080:48080 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest"
