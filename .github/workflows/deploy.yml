@@ -42,11 +42,11 @@ jobs:
           password: ${{ secrets.SYNOLOGY_PASSWORD }}
           port: ${{ secrets.SYNOLOGY_PORT }}
           script: |
-            container_id=$(docker ps -q --filter name=moneymoa-backend)
+            container_id=$(/usr/local/bin/docker ps -q --filter name=moneymoa-backend)
             
             if [ -n "$container_id" ]; then
               /usr/local/bin/docker stop moneymoa-backend && docker rm moneymoa-backend;
             fi
 
             /usr/local/bin/docker pull ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
-            /usr/local/bin/docker run -d --name moneymoa-backend -p 48080:48080 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
+            /usr/local/bin/docker run -d --name moneymoa-backend -p 48080:48977 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
