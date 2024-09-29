@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew build
 
       - name: Build Docker image
-        run: docker build -t registry.service.devyoon.kr/moneymoa-backend:latest .
+        run: docker build -t ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest .
 
       - name: Login to Synology Docker
         run: echo ${{ secrets.SYNOLOGY_PASSWORD }} | docker login ${{ secrets.DOCKER_REGISTRY }} -u "${{ secrets.SYNOLOGY_USER }}" --password-stdin
@@ -42,7 +42,11 @@ jobs:
           password: ${{ secrets.SYNOLOGY_PASSWORD }}
           port: ${{ secrets.SYNOLOGY_PORT }}
           script: |
-            if [ \$\(docker ps -q --filter name=moneymoa-backend\) ]; then
+            container_id=$(docker ps -q --filter name=moneymoa-backend)
+            
+            if [ -n "$container_id" ]; then
               docker stop moneymoa-backend && docker rm moneymoa-backend;
             fi
-            docker pull ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest && docker run -d --name moneymoa-backend -p 48080:48080 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
+
+            docker pull ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
+            docker run -d --name moneymoa-backend -p 48080:48080 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
