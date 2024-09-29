@@ -50,4 +50,4 @@ jobs:
             fi
 
             /usr/local/bin/docker pull ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
-            /usr/local/bin/docker run -d --name moneymoa-backend -p 48977:48977 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest --net my_network
+            /usr/local/bin/docker run -d --name moneymoa-backend -p 48977:48977 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest --network my_network
