@@ -24,11 +24,14 @@ jobs:
 
       - name: Create moneymoa-database.yaml
         run: |
-              mkdir -p src/main/resources/ignore
-              echo "${{ secrets.DATABASE_YAML_CONTENT }}" > src/main/resources/ignore/moneymoa-database.yaml
+          mkdir -p src/main/resources/ignore
+          echo "${{ secrets.DATABASE_YAML_CONTENT }}" | sed 's/\$/\\$/g' > src/main/resources/ignore/moneymoa-database.yaml
 
       - name: Create moneymoa-security.yaml
-        run: echo "${{ secrets.SECURITY_YAML_CONTENT }}" > src/main/resources/ignore/moneymoa-security.yaml
+        run: |
+          mkdir -p src/main/resources/ignore
+          echo "${{ secrets.SECURITY_YAML_CONTENT }}" | sed 's/\$/\\$/g' > src/main/resources/ignore/moneymoa-security.yaml
+
 
       - name: Build with Gradle
         run: ./gradlew build
