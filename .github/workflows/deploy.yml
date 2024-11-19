@@ -1,0 +1,53 @@
+name: CI/CD for Synology
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest .
+
+      - name: Login to Synology Docker
+        run: echo ${{ secrets.SYNOLOGY_PASSWORD }} | docker login ${{ secrets.DOCKER_REGISTRY }} -u "${{ secrets.SYNOLOGY_USER }}" --password-stdin
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
+
+      - name: Deploy to Synology server
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.SYNOLOGY_DOMAIN }}
+          username: ${{ secrets.SYNOLOGY_USER }}
+          password: ${{ secrets.SYNOLOGY_PASSWORD }}
+          port: ${{ secrets.SYNOLOGY_PORT }}
+          script: |
+            container_id=$(/usr/local/bin/docker ps -aq --filter name=moneymoa-backend)
+            
+            if [ -n "$container_id" ]; then
+              /usr/local/bin/docker stop moneymoa-backend 
+              /usr/local/bin/docker rm moneymoa-backend;
+            fi
+
+            /usr/local/bin/docker pull ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest
+            /usr/local/bin/docker run -d --name moneymoa-backend -p 48977:48977 ${{ secrets.DOCKER_REGISTRY }}/moneymoa-backend:latest --network my_network
