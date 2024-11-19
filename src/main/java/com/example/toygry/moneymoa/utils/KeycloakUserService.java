@@ -1,5 +1,4 @@
 package com.example.toygry.moneymoa.utils;
-
 import com.example.toygry.moneymoa.Friends.dto.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -21,7 +20,6 @@ public class KeycloakUserService {
 
     @Value("${keycloak.admin-uri}")
     private String KEYCLOAK_ADMIN_URI;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public List<User> getUserList(String accessToken) throws JsonProcessingException {

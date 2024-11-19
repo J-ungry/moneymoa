@@ -32,7 +32,6 @@ jobs:
           mkdir -p src/main/resources/ignore
           echo "${{ secrets.SECURITY_YAML_CONTENT }}" | sed 's/\$/\\$/g' > src/main/resources/ignore/moneymoa-security.yaml
 
-
       - name: Build with Gradle
         run: ./gradlew build
 
