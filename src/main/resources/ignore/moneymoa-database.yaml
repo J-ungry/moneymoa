@@ -1,6 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://postgresql:5432/moneymoa
-    username: jungry
-    password: duffufK123!
-    driver-class-name: org.postgresql.Driver
