@@ -15,6 +15,7 @@ public class YearTransactionController {
 
     private final YearTransactionService yearTransactionService;
 
+    // 1년치 트랜잭션
     @GetMapping
     private ResponseEntity<List<YearTransactionResponse>> getYearTransaction(
             @RequestHeader("Authorization") String token,

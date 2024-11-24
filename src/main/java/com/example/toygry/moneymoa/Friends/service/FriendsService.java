@@ -1,12 +1,11 @@
 package com.example.toygry.moneymoa.Friends.service;
 
-import com.example.toygry.moneymoa.utils.KeycloakUserService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.example.toygry.moneymoa.Friends.dto.RequestFriendResponse;
 import com.example.toygry.moneymoa.Friends.dto.User;
-import com.example.toygry.moneymoa.Friends.dto.UserListResponse;
+import com.example.toygry.moneymoa.Friends.dto.UserListDto;
 import com.example.toygry.moneymoa.Friends.entity.Friends;
+import com.example.toygry.moneymoa.Friends.exception.FriendDuplicateException;
+import com.example.toygry.moneymoa.Friends.exception.FriendFailedException;
 import com.example.toygry.moneymoa.Friends.repository.FriendsRepository;
 import com.example.toygry.moneymoa.utils.KeycloakToken;
 import com.example.toygry.moneymoa.utils.KeycloakUserService;
@@ -14,6 +13,7 @@ import com.example.toygry.moneymoa.utils.TokenUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +25,9 @@ public class FriendsService {
     private final TokenUtils tokenUtils;
     private final FriendsRepository friendsRepository;
 
-    public List<UserListResponse> getUserList(String token, String id) throws Exception {
+    public List<UserListDto> getUserList(String token, String id) throws Exception {
 
-        List<UserListResponse> userListResponses = new ArrayList<>();
+        List<UserListDto> userListResponses = new ArrayList<>();
         KeycloakToken keycloakToken = tokenUtils.tokenParser(token);
 
         /*
@@ -61,7 +61,7 @@ public class FriendsService {
                     break;
                 }
             }
-            UserListResponse userListResponse = new UserListResponse(
+            UserListDto userListResponse = new UserListDto(
                     user.id(),
                     user.username(),
                     status
@@ -69,5 +69,46 @@ public class FriendsService {
             userListResponses.add(userListResponse);
         }
         return userListResponses;
+    }
+
+    // 친구 신청 보내기 기능
+    public String requestFriend(RequestFriendResponse dto) {
+        // 이미 친구인지 확인하기 친구라면 에러 뱉기
+        switch (dto.status()) {
+            case "ACCEPT" -> throw new FriendDuplicateException();
+            // 만약 pending 인 경우 (내가 신청한거면 이미 요청을 보냈습니다, 상대가 신청한거면 요청 수락)
+            case "PENDING" -> {
+                // 내가 신청한 적이 있는 경우
+                boolean checkRequestPending = friendsRepository.existsByRequestUuidAndReceiverUuid(dto.requestUUID(), dto.receiverUUID());
+                if (checkRequestPending) {
+                    return "이미 요청을 전송했습니다.";
+                }
+
+                boolean checkReceivePending = friendsRepository.existsByRequestUuidAndReceiverUuid(dto.receiverUUID(), dto.requestUUID());
+                if (checkReceivePending) {
+                    Friends updateFriend = friendsRepository.findByRequestUuidAndReceiverUuid(dto.receiverUUID(), dto.requestUUID());
+                    updateFriend.updateStatus("ACCEPT"); // 승인으로 변경
+                    return "친구 승인";
+                }
+            }
+            // none 인 경우 친구 신청 보내기 (pending 상태로 db insert)
+            case "NONE" -> {
+                Friends insertFriend = Friends.builder()
+                        .requestUuid(dto.requestUUID())
+                        .requestId(dto.requestUserName())
+                        .receiverUuid(dto.receiverUUID())
+                        .receiverID(dto.receiverUserName())
+                        .status("PENDING")
+                        .createdDate(LocalDateTime.now())
+                        .modifiedDate(LocalDateTime.now())
+                        .build();
+                friendsRepository.save(insertFriend);
+            }
+            // reject 인 경우 거절당한지 3일이 지났으면 다시 친구 신청 아니면 거절당했다고 메세지 보내기
+            case "REJECT" -> {
+                return "친구 신청을 거절당했습니다";
+            }
+        }
+        throw new FriendFailedException();
     }
 }

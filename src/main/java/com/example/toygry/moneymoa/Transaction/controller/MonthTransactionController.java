@@ -15,6 +15,7 @@ public class MonthTransactionController {
 
     private final MonthTransactionService monthTransactionService;
 
+    // 1달치 트랜잭션 가져오기
     @GetMapping
     private ResponseEntity<List<MonthTransactionResponse>> getMonthTransaction(
             @RequestHeader("Authorization") String token,

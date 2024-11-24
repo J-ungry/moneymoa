@@ -1,13 +1,7 @@
 package com.example.toygry.moneymoa.Friends.controller;
 
-import com.example.toygry.moneymoa.Friends.service.FriendsService;
-import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.example.toygry.moneymoa.Friends.dto.UserListResponse;
+import com.example.toygry.moneymoa.Friends.dto.RequestFriendResponse;
+import com.example.toygry.moneymoa.Friends.dto.UserListDto;
 import com.example.toygry.moneymoa.Friends.service.FriendsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +18,19 @@ public class FriendsController {
 
     // 1) 검색을 통한 사용자 조회 기능
     @GetMapping("/users")
-    public ResponseEntity<List<UserListResponse>> getUserList(
+    public ResponseEntity<List<UserListDto>> getUserList(
             @RequestHeader("Authorization") String token,
             @RequestParam("userId") String id
     ) throws Exception {
         return ResponseEntity.ok(friendsService.getUserList(token, id));
     }
     // 2) 친구 신청 보내기 기능
+    @PostMapping("/request")
+    public ResponseEntity<String> requestFriend(
+            @RequestBody RequestFriendResponse userListDto
+    ) {
+        return ResponseEntity.ok(friendsService.requestFriend(userListDto));
+    }
     // 3) 친구 신청 수락 기능
     // 4) 친구 목록 불러오기 기능
     // 5) 친구 삭제 기능

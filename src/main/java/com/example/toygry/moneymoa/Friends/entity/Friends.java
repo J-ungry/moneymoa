@@ -23,10 +23,10 @@ public class Friends {
     private UUID id;
 
     @Column(name = "request_uuid")
-    private UUID requestUUID;
+    private UUID requestUuid;
 
     @Column(name = "receiver_uuid")
-    private UUID receiverUUID;
+    private UUID receiverUuid;
 
     @Column(name = "request_id")
     private String requestId;
@@ -42,4 +42,10 @@ public class Friends {
 
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
+
+    public void updateStatus(String status) {
+        this.status = status;
+        this.modifiedDate = LocalDateTime.now();
+    }
+
 }

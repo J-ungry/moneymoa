@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface FriendsRepository extends JpaRepository<Friends, UUID> {}
+public interface FriendsRepository extends JpaRepository<Friends, UUID> {
+    boolean existsByRequestUuidAndReceiverUuid(UUID requestUUID, UUID receiverUUID);
+    Friends findByRequestUuidAndReceiverUuid(UUID requestUUID, UUID receiverUUID);
+}
