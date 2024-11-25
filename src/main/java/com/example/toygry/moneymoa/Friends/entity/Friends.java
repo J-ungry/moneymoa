@@ -34,8 +34,9 @@ public class Friends {
     @Column(name = "receiver_id")
     private String receiverID;
 
+    @Enumerated(EnumType.STRING) // Enum을 String으로 저장
     @Column(name = "status")
-    private String status;
+    private FriendsStatus status;
 
     @Column(name = "created_date")
     private LocalDateTime createdDate;
@@ -43,7 +44,7 @@ public class Friends {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
-    public void updateStatus(String status) {
+    public void updateStatus(FriendsStatus status) {
         this.status = status;
         this.modifiedDate = LocalDateTime.now();
     }

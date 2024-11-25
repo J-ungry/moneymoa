@@ -31,7 +31,8 @@ public class FriendsController {
     ) {
         return ResponseEntity.ok(friendsService.requestFriend(userListDto));
     }
-    // 3) 친구 신청 수락 기능
+    // 3) 친구 신청 수락 기능 (Pending -> accept)
+    // 3.5) 친구 신청 거절 기능 (그냥 row 날려버리자)
     // 4) 친구 목록 불러오기 기능
     // 5) 친구 삭제 기능
     // 6) 친구 상태 (status 수정 기능)
