@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.toygry.moneymoa.Friends.entity.FriendsStatus.*;
+
 @Service
 @AllArgsConstructor
 public class FriendsService {
@@ -54,7 +56,7 @@ public class FriendsService {
                 .toList();
 
         for (User user : withoutSelfList) {
-            FriendsStatus status = FriendsStatus.NONE;
+            FriendsStatus status = NONE;
             for (Friends friends : allFriendsList) {
                 // 해당 유저가 나와 친구 상태인지를 check
                 if (friends.getRequestId().equals(user.username()) || friends.getReceiverID().equals(user.username())) {
@@ -76,9 +78,9 @@ public class FriendsService {
     public String requestFriend(RequestFriendResponse dto) {
         // 이미 친구인지 확인하기 친구라면 에러 뱉기
         switch (dto.status()) {
-            case FriendsStatus.ACCEPT -> throw new FriendDuplicateException();
+            case ACCEPT -> throw new FriendDuplicateException();
             // 만약 pending 인 경우 (내가 신청한거면 이미 요청을 보냈습니다, 상대가 신청한거면 요청 수락)
-            case FriendsStatus.PENDING -> {
+            case PENDING -> {
                 // 내가 신청한 적이 있는 경우
                 boolean checkRequestPending = friendsRepository.existsByRequestUuidAndReceiverUuid(dto.requestUUID(), dto.receiverUUID());
                 if (checkRequestPending) {
@@ -88,18 +90,18 @@ public class FriendsService {
                 boolean checkReceivePending = friendsRepository.existsByRequestUuidAndReceiverUuid(dto.receiverUUID(), dto.requestUUID());
                 if (checkReceivePending) {
                     Friends updateFriend = friendsRepository.findByRequestUuidAndReceiverUuid(dto.receiverUUID(), dto.requestUUID());
-                    updateFriend.updateStatus(FriendsStatus.ACCEPT); // 승인으로 변경
+                    updateFriend.updateStatus(ACCEPT); // 승인으로 변경
                     return "친구 승인";
                 }
             }
             // none 인 경우 친구 신청 보내기 (pending 상태로 db insert)
-            case FriendsStatus.NONE -> {
+            case NONE -> {
                 Friends insertFriend = Friends.builder()
                         .requestUuid(dto.requestUUID())
                         .requestId(dto.requestUserName())
                         .receiverUuid(dto.receiverUUID())
                         .receiverID(dto.receiverUserName())
-                        .status(FriendsStatus.PENDING)
+                        .status(PENDING)
                         .createdDate(LocalDateTime.now())
                         .modifiedDate(LocalDateTime.now())
                         .build();
@@ -107,5 +109,10 @@ public class FriendsService {
             }
         }
         throw new FriendFailedException();
+    }
+
+    // 친구 신청 수락 기능
+    public String acceptFriend(String token, RequestFriendResponse response) {
+        return null;
     }
 }

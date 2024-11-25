@@ -27,12 +27,28 @@ public class FriendsController {
     // 2) 친구 신청 보내기 기능
     @PostMapping("/request")
     public ResponseEntity<String> requestFriend(
-            @RequestBody RequestFriendResponse userListDto
+            @RequestBody RequestFriendResponse requestFriendResponse
     ) {
-        return ResponseEntity.ok(friendsService.requestFriend(userListDto));
+        return ResponseEntity.ok(friendsService.requestFriend(requestFriendResponse));
     }
     // 3) 친구 신청 수락 기능 (Pending -> accept)
+
+    @PostMapping("/accept")
+    public ResponseEntity<String> acceptFriend(
+            @RequestHeader("Authorization") String token,
+            @RequestParam RequestFriendResponse requestFriendResponse
+    ) {
+        return ResponseEntity.ok(friendsService.acceptFriend(token, requestFriendResponse));
+    }
     // 3.5) 친구 신청 거절 기능 (그냥 row 날려버리자)
+
+//    @PostMapping("/reject")
+//    public ResponseEntity<String> rejectFriend(
+//            @RequestHeader("Authorization") String token,
+//            @RequestParam RequestFriendResponse requestFriendResponse
+//    ) {
+//        return ResponseEntity.ok(friendsService.rejectFriend(token, requestFriendResponse));
+//    }
     // 4) 친구 목록 불러오기 기능
     // 5) 친구 삭제 기능
     // 6) 친구 상태 (status 수정 기능)
