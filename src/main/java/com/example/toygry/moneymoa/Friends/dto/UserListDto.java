@@ -1,4 +1,6 @@
 package com.example.toygry.moneymoa.Friends.dto;
 
-public record UserListDto(String UUID, String userId, String status) {
+import com.example.toygry.moneymoa.Friends.entity.FriendsStatus;
+
+public record UserListDto(String UUID, String userId, FriendsStatus status) {
 }
